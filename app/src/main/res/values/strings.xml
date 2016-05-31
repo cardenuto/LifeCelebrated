@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">LifeCelebrated</string>
+
+    <!-- TODO: (Required) Add your Firebase database reference replace YOUR_DATABASE_NAME with the name of your database -->
+    <string name="FIREBASE_BASE_REF">https://YOUR_DATABASE_NAME.firebaseio.com</string>
+
+    <!-- TODO: (Optional) change the user data path -->
+    <!-- location (off of the base reference) of the user map -->
+    <string name="FIREBASE_USER_MAP">userData/userMap</string>
+    <!-- location (off of the base reference) of the user ID (push) -->
+    <string name="FIREBASE_USERS">userData/users</string>
+    <!-- location (off of the FIREBASE_USERS) of the user login information -
+        leave empty for no grouping:  <string name="FIREBASE_USER_INFO"/> -->
+    <string name="FIREBASE_USER_INFO">userInfo</string>
+    <string name="FIREBASE_CHILD_EDIT_LIST">edit/editList</string>
+    <string name="FIREBASE_CHILD_EDIT_DETAILS">edit/editDetails</string>
+
+    <!-- **** Start Shared Preference **** -->
+
+    <!-- define shared file name -->
+    <string name="preference_file_key">info.anth.lifecelebrated.PREFERENCE_FILE_KEY</string>
+
+    <!-- TODO: (Optional) Change fields defaults for your shared preferences -->
+    <!-- define shared file field - defaults -->
+    <string name="preference_email_default">none</string>
+    <string name="preference_display_name_default">Not provided</string>
+    <string name="preference_profile_image_default">none</string>
+
+    <!-- Messages -->
+    <string name="preference_missing_error">Missing user data</string>
+
+    <!-- **** End Shared Preference **** -->
+
+    <!-- **** Start Firebase login text **** -->
+
+    <!-- fragment_firebase_login.xml -->
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_login">Login</string>
+    <string name="login_or">or</string>
+    <string name="login_facebook">Login with Facebook</string>
+    <string name="login_google">Login with Google</string>
+    <string name="login_twitter">Login with Twitter</string>
+    <string name="login_create">Create Account</string>
+
+    <!-- activity_login.xml -->
+    <string name="login_verify_text">This activity requires you to be logged in.</string>
+    <string name="login_verify_cancel">Cancel</string>
+    <string name="login_verify_login">Login</string>
+    <string name="login_reset_password">Reset Password</string>
+
+    <!-- dialog_login_register.xml -->
+    <string name="login_retype_password">Retype Password</string>
+    <string name="register_name">Name (optional)</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">Password must be at least 3 characters long</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_password_retype">Password and password retype are not the same</string>
+
+    <!-- LoginActivity.java messages -->
+    <string name="reset_email_sent">Password reset email sent</string>
+    <string name="reset_email_required">Email field is required for reset</string>
+    <string name="missing_user_data">Not provided by user</string>
+
+    <!-- **** End Firebase login text **** -->
+</resources>
