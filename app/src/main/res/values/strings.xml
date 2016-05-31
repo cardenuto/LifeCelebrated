@@ -64,4 +64,136 @@
     <string name="missing_user_data">Not provided by user</string>
 
     <!-- **** End Firebase login text **** -->
+
+    <!-- ************************* -->
+    <!-- *** begin edit activity *** -->
+
+    <string name="image_alt">Location Image</string>
+    <string name="image_device">Image on another device</string>
+
+    <!-- *** end edit activity *** -->
+    <!-- ************************* -->
+
+    <!-- *** begin main activity *** -->
+
+    <!-- button text -->
+    <string name="explore">Explore</string>
+    <string name="add">Add</string>
+    <string name="discovery">Discovery</string>
+    <string name="my_places">Places I have been</string>
+    <string name="my_saved">Saved</string>
+    <string name="my_watched">Watched</string>
+    <string name="my_discoveries">My Discoveries</string>
+    <string name="my_all">All</string>
+    <string name="my_edits">Current Edits</string>
+
+    <!-- *** end main activity *** -->
+
+    <!-- *** begin step activity *** -->
+
+    <string name="step">Step</string>
+    <string name="title_activity_steps">Add a Location</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- *** begin step fragments *** -->
+
+    <!-- fragment_al_editbox.xml -->
+    <string name="hint_name">Name</string>
+    <string name="hint_description">Description</string>
+
+    <!-- fragment_al_image.xml -->
+    <string name="image_camera">Camera</string>
+    <string name="image_load">Load</string>
+    <string name="image_upload">Upload</string>
+    <string name="image_landscape">Please note: Main picture will be shown in landscape format.</string>
+    <string name="image_description">Main Image</string>
+
+    <!-- fragment_al_verify_location.xml -->
+    <string name="meters">Meters</string>
+    <string name="dashes">--</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="location_heading">Location Details:</string>
+    <string name="manual_add_location">To change location, long click on the map. A marker will appear. Click the update button to update the location.</string>
+    <string name="location_button">Update Location</string>
+
+    <!-- *** Step Order Start *** -->
+    <!-- Ordered step details - change order using int array in numbers -->
+
+    <string-array name="step_fragment">
+        <item />
+        <item>ImageFragment</item>
+        <item>EditBoxFragment</item>
+        <item>BlankFragment</item>
+        <item>BlankFragment</item>
+        <item>EditBoxFragment2</item>
+        <item>BlankFragment</item>
+        <item>VerifyLocationFragment</item>
+        <item>BlankFragment</item>
+    </string-array>
+
+    <string-array name="step_tab_icon">
+        <item />
+        <item>ic_step_camera_24dp</item>
+        <item>ic_step_edit_24dp</item>
+        <item>ic_step_edit_24dp</item>
+        <item>ic_step_edit_24dp</item>
+        <item>ic_step_edit_24dp</item>
+        <item>ic_step_camera_24dp</item>
+        <item>ic_step_location_24dp</item>
+        <item>ic_step_publish_24dp</item>
+    </string-array>
+
+    <!-- Changes in the step_db_column array also needs to be made in DbLocationEditStatus.java -->
+    <string-array name="step_db_column">
+        <item />
+        <item>picture</item>
+        <item>name</item>
+        <item>category</item>
+        <item>tags</item>
+        <item>description</item>
+        <item>images</item>
+        <item>location</item>
+        <item>publish</item>
+    </string-array>
+
+    <string-array name="step_title">
+        <item />
+        <item>Add Main Picture</item>
+        <item>Enter Name</item>
+        <item>Set Primary Category</item>
+        <item>Enter Tags</item>
+        <item>Provide a Description</item>
+        <item>Additional Images</item>
+        <item>Verify Location</item>
+        <item>Publish</item>
+    </string-array>
+
+    <string-array name="step_title_short">
+        <item />
+        <item>Picture</item>
+        <item>Name</item>
+        <item>Category</item>
+        <item>Tags</item>
+        <item>Description</item>
+        <item>Images</item>
+        <item>Location</item>
+        <item>Publish</item>
+    </string-array>
+
+    <string-array name="step_text">
+        <item />
+        <item>Choose a picture to represent the location.</item>
+        <item>Please enter the name of the location.</item>
+        <item>The Primary Category will be one of the major ways of filtering a location. </item>
+        <item>Tags will be used to search and filter results. Please add multiple tags examples: Artist, Architect, Architectural style, Revolutionary War &#8230; </item>
+        <item>Description of the location.</item>
+        <item>Any additional images</item>
+        <item>Please verify that the location shown on the map is in the correct location.</item>
+        <item>Publish the location for other to find.</item>
+    </string-array>
+
+    <!-- *** end step fragments *** -->
+    <!-- *** end step activity *** -->
+
 </resources>

@@ -3,4 +3,45 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="colorStepIcons">@color/colorPrimaryDark</color>
+
+    <color name="colorStep0text">#E53935</color>
+    <color name="colorStep0back">#EF5350</color>
+
+    <color name="colorStep1text">#FF5722</color>
+    <color name="colorStep1back">#FF8A65</color>
+
+    <color name="colorStep2text">#2E7D32</color>
+    <color name="colorStep2back">#43A047</color>
+
+    <color name="colorStep3text">#1976D2</color>
+    <color name="colorStep3back">#2196F3</color>
+
+    <color name="colorStep4text">#9C27B0</color>
+    <color name="colorStep4back">#BA68C8</color>
+
+    <color name="colorStep5text">#795548</color>
+    <color name="colorStep5back">#A1887F</color>
+
+    <color name="colorStep6text">#546E7A</color>
+    <color name="colorStep6back">#78909C</color>
+
+    <color name="colorStep7text">#424242</color>
+    <color name="colorStep7back">#757575</color>
+
+    <!-- Step is position + 1 -->
+    <color name="progressColor">@color/colorStep6back</color>
+
+    <array name="step_text_color">
+        <item/>
+        <item>@color/colorStep0text</item>
+        <item>@color/colorStep1text</item>
+        <item>@color/colorStep2text</item>
+        <item>@color/colorStep3text</item>
+        <item>@color/colorStep4text</item>
+        <item>@color/colorStep5text</item>
+        <item>@color/colorStep6text</item>
+        <item>@color/colorStep7text</item>
+    </array>
 </resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="step_count">8</integer>
+
+    <!--
+        1 Add Main Picture
+        2 Enter Name
+        5 Provide a Description
+        7 Verify Location
+        6 Additional Images
+        3 Set Primary Category
+        4 Enter Tags
+        8 Publish
+    -->
+
+    <integer-array name="step_array_no">
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>7</item>
+        <item>6</item>
+        <item>3</item>
+        <item>4</item>
+        <item>8</item>
+    </integer-array>
+
+
+</resources>
