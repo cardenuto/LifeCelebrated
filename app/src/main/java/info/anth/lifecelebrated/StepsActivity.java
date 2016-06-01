@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,15 +22,11 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TabWidget;
-import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.firebase.client.snapshot.StringNode;
 
 import java.util.Stack;
 
@@ -39,6 +34,7 @@ import info.anth.lifecelebrated.AddLocationSteps.BlankFragment;
 import info.anth.lifecelebrated.AddLocationSteps.EditBoxFragment;
 import info.anth.lifecelebrated.AddLocationSteps.EditBoxFragment2;
 import info.anth.lifecelebrated.AddLocationSteps.ImageFragment;
+import info.anth.lifecelebrated.AddLocationSteps.NamesFragment;
 import info.anth.lifecelebrated.AddLocationSteps.VerifyLocationFragment;
 import info.anth.lifecelebrated.Data.DbLocationEditList;
 import info.anth.lifecelebrated.Data.DbLocationEditStatus;
@@ -47,13 +43,13 @@ import info.anth.lifecelebrated.Data.DbLocationMaster;
 import info.anth.lifecelebrated.Services.ObtainGPSDataService;
 import info.anth.lifecelebrated.login.LocalUserInfo;
 
-public class Steps extends AppCompatActivity {
+public class StepsActivity extends AppCompatActivity {
 
     public static final String REQUEST_CURRENT_STEP = "current_step";
     public static final String REQUEST_CURRENT_LOCATION = "current_location";
     public static final String REQUEST_CURRENT_EDIT_LIST_ITEM = "edit_list_item";
 
-    public static final String LOG_TAG = Steps.class.getSimpleName();
+    public static final String LOG_TAG = StepsActivity.class.getSimpleName();
 
 
     int currentStep;
@@ -223,7 +219,7 @@ public class Steps extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                composeEmail("7 Steps Towards Financial Freedom", "");
+                composeEmail("7 StepsActivity Towards Financial Freedom", "");
             }
         });
 */
@@ -636,6 +632,9 @@ public class Steps extends AppCompatActivity {
                             mDbLocationMasterRef.getRef().toString(), mDbLocationEditListRef.getRef().toString());
                 case "ImageFragment":
                     return ImageFragment.newInstance(position, mDbLocationStatusRef.getRef().toString(),
+                            mDbLocationMasterRef.getRef().toString(), mDbLocationEditListRef.getRef().toString());
+                case "NamesFragment":
+                    return NamesFragment.newInstance(position, mDbLocationStatusRef.getRef().toString(),
                             mDbLocationMasterRef.getRef().toString(), mDbLocationEditListRef.getRef().toString());
                 case "VerifyLocationFragment":
                     return VerifyLocationFragment.newInstance(position, mDbLocationStatusRef.getRef().toString(),

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/entered_text_family"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Family Name"
+        android:inputType="textCapSentences|textMultiLine|textAutoComplete"
+        android:textIsSelectable="true">
+        <requestFocus />
+    </EditText>
+
+
+    <EditText
+        android:id="@+id/entered_text_first"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="First Name"
+        android:inputType="textCapSentences|textMultiLine|textAutoComplete"
+        android:textIsSelectable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        >
+        <requestFocus />
+    </EditText>
+
+    <!-- <TextView
+        android:id="@+id/edit_list_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textSize="20sp"
+        /> -->
+
+</LinearLayout>

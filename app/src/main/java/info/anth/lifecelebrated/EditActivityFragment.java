@@ -117,10 +117,10 @@ public class EditActivityFragment extends Fragment {
                     public void onClick(View v) {
                         //Log.i("ajc", "Click location: " + holder.mItem.getEditKey() + " edit list key: " + holder.mEditListKey);
 
-                        Intent intent = new Intent(context, Steps.class);
-                        intent.putExtra(Steps.REQUEST_CURRENT_STEP, 0);
-                        intent.putExtra(Steps.REQUEST_CURRENT_LOCATION, holder.mItem.getEditKey());
-                        intent.putExtra(Steps.REQUEST_CURRENT_EDIT_LIST_ITEM, holder.mEditListKey);
+                        Intent intent = new Intent(context, StepsActivity.class);
+                        intent.putExtra(StepsActivity.REQUEST_CURRENT_STEP, 0);
+                        intent.putExtra(StepsActivity.REQUEST_CURRENT_LOCATION, holder.mItem.getEditKey());
+                        intent.putExtra(StepsActivity.REQUEST_CURRENT_EDIT_LIST_ITEM, holder.mEditListKey);
                         context.startActivity(intent);
 
 

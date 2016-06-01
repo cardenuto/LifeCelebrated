@@ -14,6 +14,7 @@
     <string name="FIREBASE_USER_INFO">userInfo</string>
     <string name="FIREBASE_CHILD_EDIT_LIST">edit/editList</string>
     <string name="FIREBASE_CHILD_EDIT_DETAILS">edit/editDetails</string>
+    <string name="FIREBASE_CHILD_MASTER_NAMES">names</string>
 
     <!-- **** Start Shared Preference **** -->
 
@@ -105,7 +106,7 @@
     <string name="image_camera">Camera</string>
     <string name="image_load">Load</string>
     <string name="image_upload">Upload</string>
-    <string name="image_landscape">Please note: Main picture will be shown in landscape format.</string>
+    <string name="image_landscape"/>
     <string name="image_description">Main Image</string>
 
     <!-- fragment_al_verify_location.xml -->
@@ -123,11 +124,8 @@
     <string-array name="step_fragment">
         <item />
         <item>ImageFragment</item>
-        <item>EditBoxFragment</item>
         <item>BlankFragment</item>
-        <item>BlankFragment</item>
-        <item>EditBoxFragment2</item>
-        <item>BlankFragment</item>
+        <item>NamesFragment</item>
         <item>VerifyLocationFragment</item>
         <item>BlankFragment</item>
     </string-array>
@@ -135,11 +133,8 @@
     <string-array name="step_tab_icon">
         <item />
         <item>ic_step_camera_24dp</item>
-        <item>ic_step_edit_24dp</item>
-        <item>ic_step_edit_24dp</item>
-        <item>ic_step_edit_24dp</item>
-        <item>ic_step_edit_24dp</item>
         <item>ic_step_camera_24dp</item>
+        <item>ic_step_edit_24dp</item>
         <item>ic_step_location_24dp</item>
         <item>ic_step_publish_24dp</item>
     </string-array>
@@ -148,11 +143,8 @@
     <string-array name="step_db_column">
         <item />
         <item>picture</item>
-        <item>name</item>
-        <item>category</item>
-        <item>tags</item>
-        <item>description</item>
         <item>images</item>
+        <item>names</item>
         <item>location</item>
         <item>publish</item>
     </string-array>
@@ -160,11 +152,8 @@
     <string-array name="step_title">
         <item />
         <item>Add Main Picture</item>
-        <item>Enter Name</item>
-        <item>Set Primary Category</item>
-        <item>Enter Tags</item>
-        <item>Provide a Description</item>
         <item>Additional Images</item>
+        <item>Enter Names</item>
         <item>Verify Location</item>
         <item>Publish</item>
     </string-array>
@@ -172,25 +161,19 @@
     <string-array name="step_title_short">
         <item />
         <item>Picture</item>
-        <item>Name</item>
-        <item>Category</item>
-        <item>Tags</item>
-        <item>Description</item>
         <item>Images</item>
+        <item>Names</item>
         <item>Location</item>
         <item>Publish</item>
     </string-array>
 
     <string-array name="step_text">
         <item />
-        <item>Choose a picture to represent the location.</item>
-        <item>Please enter the name of the location.</item>
-        <item>The Primary Category will be one of the major ways of filtering a location. </item>
-        <item>Tags will be used to search and filter results. Please add multiple tags examples: Artist, Architect, Architectural style, Revolutionary War &#8230; </item>
-        <item>Description of the location.</item>
-        <item>Any additional images</item>
-        <item>Please verify that the location shown on the map is in the correct location.</item>
-        <item>Publish the location for other to find.</item>
+        <item>Choose a picture to represent the grave marker.</item>
+        <item>Any additional images (quotes)</item>
+        <item>Please enter the names and dates on marker.</item>
+        <item>Please verify that the location and cemetery shown on the map is in the correct location.</item>
+        <item>Publish the grave marker.</item>
     </string-array>
 
     <!-- *** end step fragments *** -->

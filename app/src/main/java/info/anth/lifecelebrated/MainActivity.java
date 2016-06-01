@@ -1,6 +1,7 @@
 package info.anth.lifecelebrated;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +25,24 @@ public class MainActivity extends AppCompatActivity {
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
     }
 
+    public void callStep0(View view) {
+        Context context = view.getContext();
+        startStepActivity(context, 0);
+    }
 
+    public void startStepActivity(Context context, int stepNo){
+        Intent intent = new Intent(context, StepsActivity.class);
+        intent.putExtra(StepsActivity.REQUEST_CURRENT_STEP, stepNo);
+        context.startActivity(intent);
+    }
+
+    public void callEditIntent(View view){
+        Intent intent = new Intent(view.getContext(), EditActivity.class);
+        startActivity(intent);
+    }
+
+    // *** Manage database connection START ***
+    // Place login on resume
     @Override
     public void onResume() {
         super.onResume();
@@ -63,4 +81,5 @@ public class MainActivity extends AppCompatActivity {
             onResume();
         }
     }
+    // *** Manage database connection END ***
 }

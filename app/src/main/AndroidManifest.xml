@@ -47,7 +47,7 @@
             android:name=".login.LoginActivity"
             android:theme="@style/DialogTheme" />
         <activity
-            android:name="info.anth.lifecelebrated.Steps"
+            android:name=".StepsActivity"
             android:label="@string/title_activity_steps"
             android:parentActivityName="info.anth.lifecelebrated.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
