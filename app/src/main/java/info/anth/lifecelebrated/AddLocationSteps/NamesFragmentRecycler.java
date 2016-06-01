@@ -75,10 +75,10 @@ public class NamesFragmentRecycler extends Fragment {
                 return false;
             }});*/
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        NamesRecyclerAdapter myRecyclerViewAdapter = new NamesRecyclerAdapter(getContext());
+        NamesRecyclerAdapter myRecyclerViewAdapter = new NamesRecyclerAdapter(getContext(), mDbLocationMasterNamesRef);
 
         recycler.setAdapter(myRecyclerViewAdapter);
-
+/*
         //insert dummy items
         myRecyclerViewAdapter.add(0, new DbLocationNames("Smith", "Eric"));
         myRecyclerViewAdapter.add(1, new DbLocationNames("Smith", "Android"));
@@ -108,7 +108,6 @@ public class NamesFragmentRecycler extends Fragment {
 
                 Log.i("ajc2", "in populateViewHolder : " + dbLocationNames.getFamilyName() );
             }
-/*
             @Override
             public void onBindViewHolder(final LocationNamesViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
@@ -122,8 +121,9 @@ public class NamesFragmentRecycler extends Fragment {
                     }
                 });
             }
-            */
+
         };
+       */
         //Log.i("ajc2","adapter count:  " + String.valueOf(mChildAdapter.getItemCount()));
         //recycler.setAdapter(mChildAdapter);
 
@@ -131,7 +131,7 @@ public class NamesFragmentRecycler extends Fragment {
 
         return rootView;
     }
-
+/*
     @Override
     public void onResume() {
         super.onResume();
@@ -162,4 +162,5 @@ public class NamesFragmentRecycler extends Fragment {
         Log.i("ajc2","in onDestroy ");
         mChildAdapter.cleanup();
     }
+    */
 }

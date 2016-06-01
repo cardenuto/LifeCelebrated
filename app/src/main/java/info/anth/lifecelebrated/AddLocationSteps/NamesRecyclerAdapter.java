@@ -7,11 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.Query;
 import java.util.ArrayList;
 import java.util.List;
 
 import info.anth.lifecelebrated.Data.DbLocationNames;
+import info.anth.lifecelebrated.Helpers.FirebaseArrayLocal;
 import info.anth.lifecelebrated.R;
+
 
 /**
  * Created by Primary on 6/1/2016.
@@ -21,13 +26,37 @@ import info.anth.lifecelebrated.R;
 public class NamesRecyclerAdapter extends RecyclerView.Adapter<NamesRecyclerAdapter.ItemHolder> {
 
     //private List<String> itemsName;
-    private List<DbLocationNames> itemsName;
+    //private List<DbLocationNames> itemsName;
     //private OnItemClickListener onItemClickListener;
     private LayoutInflater layoutInflater;
+    FirebaseArrayLocal mSnapshots;
 
-    public NamesRecyclerAdapter(Context context){
+    public NamesRecyclerAdapter(Context context, Query ref){
         layoutInflater = LayoutInflater.from(context);
-        itemsName = new ArrayList<DbLocationNames>();
+        //itemsName = new ArrayList<DbLocationNames>();
+        mSnapshots = new FirebaseArrayLocal(ref);
+
+        mSnapshots.setOnChangedListener(new FirebaseArrayLocal.OnChangedListener() {
+            @Override
+            public void onChanged(EventType type, int index, int oldIndex) {
+                switch (type) {
+                    case Added:
+                        notifyItemInserted(index);
+                        break;
+                    case Changed:
+                        notifyItemChanged(index);
+                        break;
+                    case Removed:
+                        notifyItemRemoved(index);
+                        break;
+                    case Moved:
+                        notifyItemMoved(oldIndex, index);
+                        break;
+                    default:
+                        throw new IllegalStateException("Incomplete case statement");
+                }
+            }
+        });
     }
 
     @Override
@@ -38,12 +67,18 @@ public class NamesRecyclerAdapter extends RecyclerView.Adapter<NamesRecyclerAdap
 
     @Override
     public void onBindViewHolder(NamesRecyclerAdapter.ItemHolder holder, int position) {
-        holder.setItems(itemsName.get(position));
+        //holder.setItems(itemsName.get(position));
+        holder.setItems(parseSnapshot(mSnapshots.getItem(position)));
+    }
+
+    protected DbLocationNames parseSnapshot(DataSnapshot dataSnapshot) {
+        return dataSnapshot.getValue(DbLocationNames.class);
     }
 
     @Override
     public int getItemCount() {
-        return itemsName.size();
+        //return itemsName.size();
+        return mSnapshots.getCount();
     }
 
     /*
@@ -59,7 +94,7 @@ public class NamesRecyclerAdapter extends RecyclerView.Adapter<NamesRecyclerAdap
         public void onItemClick(ItemHolder item, int position);
     }
 */
-    public void add(int location, DbLocationNames iName){
+/*    public void add(int location, DbLocationNames iName){
         itemsName.add(location, iName);
         notifyItemInserted(location);
     }
@@ -71,7 +106,8 @@ public class NamesRecyclerAdapter extends RecyclerView.Adapter<NamesRecyclerAdap
         itemsName.remove(location);
         notifyItemRemoved(location);
     }
-/*
+*/
+    /*
     public static class ItemHolderOld extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private NamesRecyclerAdapter parent;
