@@ -1,11 +1,6 @@
 package info.anth.lifecelebrated.AddLocationSteps;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
-import android.support.v4.app.FragmentManager;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,18 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
-import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseRecyclerAdapter;
 
-import org.w3c.dom.Text;
-
-import info.anth.lifecelebrated.Data.DbLocationEditList;
 import info.anth.lifecelebrated.Data.DbLocationNames;
-import info.anth.lifecelebrated.Helpers.RecyclerViewAdapter;
 import info.anth.lifecelebrated.R;
 
 /**

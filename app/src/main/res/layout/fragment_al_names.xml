@@ -1,20 +1,9 @@
-<!--
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".StepsActivity"
-    android:orientation="vertical">
--->
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:keepScreenOn="true"
-    tools:ignore="MergeRootFrame">
+    >
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -28,46 +17,11 @@
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
+
             <!-- Title -->
             <include layout="@layout/include_step_header" />
 
-            <!-- Quote -->
-            <!--            <TextView
-                            android:id="@+id/extra_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="15dp"
-                            android:layout_marginEnd="15dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginRight="15dp"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="10dp"
-                            android:gravity="center"
-                            android:padding="5dp"
-                            android:textIsSelectable="true"
-                            android:textSize="20sp"
-                            android:textStyle="italic" />
-            -->
-            <!-- Recycle View
-            <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/namesList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/x_step_names_list"
-                tools:context="info.anth.lifecelebrated.StepsActivity"
-                tools:showIn="@layout/activity_steps"
-                />-->
-
-            <!--
-            <fragment
-                android:id="@+id/fragment_recycler"
-                android:name="info.anth.lifecelebrated.AddLocationSteps.NamesFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:layout="@layout/recycler_step_names" />-->
-
+            <!-- Recycler View -->
             <LinearLayout
                 android:id="@+id/fragment_recycler"
                 android:layout_width="match_parent"
@@ -86,6 +40,7 @@
 
     </ScrollView>
 
+    <!-- Action Button -->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

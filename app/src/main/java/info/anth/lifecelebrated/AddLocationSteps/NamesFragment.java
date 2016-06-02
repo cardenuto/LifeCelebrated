@@ -144,42 +144,6 @@ public class NamesFragment extends Fragment {
         //
         // -------
 
-        /*
-        RecyclerView recycler = (RecyclerView) rootView.findViewById(R.id.namesList);
-        Log.i("ajc2", "Recycler : " + String.valueOf(recycler) );
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mChildAdapter = new FirebaseRecyclerAdapter<DbLocationNames, LocationNamesViewHolder>
-                (DbLocationNames.class, R.layout.x_step_names_list, LocationNamesViewHolder.class, mDbLocationMasterNamesRef) {
-            @Override
-            public void populateViewHolder(LocationNamesViewHolder locationNamesViewHolder
-                    , DbLocationNames dbLocationNames, int position) {
-
-                // define the text fields
-                locationNamesViewHolder.editFamilyName.setText(dbLocationNames.getFamilyName());
-                locationNamesViewHolder.editFirstName.setText(dbLocationNames.getFirstName());
-
-                Log.i("ajc2", "in populateViewHolder : " + dbLocationNames.getFamilyName() );
-            }
-
-            @Override
-            public void onBindViewHolder(final LocationNamesViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-
-                holder.mItem = (DbLocationNames) mChildAdapter.getItem(position);
-                holder.mNameKey = mChildAdapter.getRef(position).getKey();
-                holder.mView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.i("ajc2", "Click position: " + String.valueOf(holder.getAdapterPosition()) + " key: " + holder.mNameKey);
-                    }
-                });
-            }
-        };
-        recycler.setAdapter(mChildAdapter);
-        */
-
         Fragment namesFragmentRecycler = NamesFragmentRecycler.newInstance(mDbLocationMasterRef.getRef().toString());
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_recycler, namesFragmentRecycler).commit();
@@ -189,9 +153,6 @@ public class NamesFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //DbLocationNames newDbLocationNames = new DbLocationNames("Smitty", "My");
-                //DbLocationNames newDbLocationNames = DbLocationNames.columns.createBlank();
-                //mDbLocationMasterNamesRef.push().setValue(newDbLocationNames);
                 NamesDialog namesDialog = NamesDialog.newInstance(mDbLocationMasterNamesRef.getRef().toString(), null);
                 namesDialog.show(getChildFragmentManager(),"");
             }
@@ -199,93 +160,6 @@ public class NamesFragment extends Fragment {
 
 
         return rootView;
-    }
-/*
-    public static class LocationNamesViewHolder extends RecyclerView.ViewHolder {
-        View mView;
-        EditText editFamilyName;
-        EditText editFirstName;
-        public DbLocationNames mItem;
-        public String mNameKey;
-
-        public LocationNamesViewHolder(View itemView) {
-            super(itemView);
-            mView = itemView;
-            editFamilyName = (EditText)itemView.findViewById(R.id.entered_text_family);
-            editFirstName = (EditText)itemView.findViewById(R.id.entered_text_first);
-        }
-    }
-*/
-    public void refreshScreen(final DbLocationMaster thisLocationMaster) {
-        /*EditText editText = (EditText) rootView.findViewById(R.id.entered_text);
-        TextView textView = (TextView) rootView.findViewById(R.id.show_text);
-
-        String enteredText="";
-
-        enteredText = thisLocationMaster.getName();
-
-        editText.setText(enteredText);
-        textView.setText(enteredText);
-        */
-        databaseRefreshedScreen = true;
-
-    }
-
-    // ------------------------------------
-    // Database functions
-    // ------------------------------------
-
-    // Firebase listener for the master record data
-    private void setDBListener() {
-
-        valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-                DbLocationMaster thisLocationMaster = snapshot.getValue(DbLocationMaster.class);
-
-                if (thisLocationMaster != null) {
-                    Log.i("ajc","addValueEventListener name: " + thisLocationMaster.getName() + " descr: " + thisLocationMaster.getDescription());
-                    refreshScreen(thisLocationMaster);
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.e(LOG_TAG, "The read failed: " + firebaseError.getMessage());
-            }
-        };
-
-        mDbLocationMasterRef.addValueEventListener(valueEventListener);
-    }
-    //
-    // ------------------------------------
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        Log.i("ajc","onPause: " + stepTitle);
-        if (mDbLocationMasterRef != null && valueEventListener != null) {
-            //Log.i(LOG_TAG, "before remove");
-            mDbLocationMasterRef.removeEventListener(valueEventListener);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onStart();
-
-        Log.i("ajc","onResume: " + stepTitle);
-        if (mDbLocationMasterRef != null)
-            setDBListener();
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-       // mChildAdapter.cleanup();
     }
 }
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- if the number of steps changes, string arrays and class: DbLocationEditStatus will need updated -->
     <integer name="step_count">5</integer>
 
     <!--

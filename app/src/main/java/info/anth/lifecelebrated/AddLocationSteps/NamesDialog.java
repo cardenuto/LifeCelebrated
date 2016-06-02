@@ -3,36 +3,24 @@ package info.anth.lifecelebrated.AddLocationSteps;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import info.anth.lifecelebrated.Data.DbLocationMaster;
 import info.anth.lifecelebrated.Data.DbLocationNames;
 import info.anth.lifecelebrated.Helpers.Helper;
 import info.anth.lifecelebrated.R;
-import info.anth.lifecelebrated.login.LoginActivity;
-import info.anth.lifecelebrated.login.LoginRegisterDialog;
 
 /**
  * Created by Primary on 6/1/2016.
@@ -48,7 +36,6 @@ public class NamesDialog  extends DialogFragment {
 
     private static View mView;
     private static AlertDialog mDialog;
-    private Context context;
     private String birthFormat = "YMD";
     private String deathFormat = "YMD";
 
@@ -86,7 +73,6 @@ public class NamesDialog  extends DialogFragment {
         final LayoutInflater inflater = getActivity().getLayoutInflater();
 
         mView = inflater.inflate(R.layout.dialog_fragment_al_names, null);
-        context = getActivity().getApplicationContext();
         editTextFamilyName = (EditText) mView.findViewById(R.id.family_name);
         editTextFirstName = (EditText) mView.findViewById(R.id.first_name);
 
@@ -94,99 +80,9 @@ public class NamesDialog  extends DialogFragment {
         editTextBirthDay = (EditText) mView.findViewById(R.id.birth_day);
         spinnerBirthMonth = (Spinner) mView.findViewById(R.id.birth_month);
 
-        RadioButton radioButtonBirthYMD = (RadioButton) mView.findViewById(R.id.birth_date_format_ymd);
-        radioButtonBirthYMD.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (editTextBirthDay.getVisibility() == View.GONE) editTextBirthDay.setText("");
-                editTextBirthDay.setVisibility(View.VISIBLE);
-                spinnerBirthMonth.setVisibility(View.VISIBLE);
-                birthFormat = "YMD";
-            }
-        });
-
-        RadioButton radioButtonBirthYM = (RadioButton) mView.findViewById(R.id.birth_date_format_ym);
-        radioButtonBirthYM.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editTextBirthDay.setVisibility(View.GONE);
-                editTextBirthDay.setText("1");
-                spinnerBirthMonth.setVisibility(View.VISIBLE);
-                birthFormat = "YM";
-            }
-        });
-
-        RadioButton radioButtonBirthY = (RadioButton) mView.findViewById(R.id.birth_date_format_y);
-        radioButtonBirthY.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editTextBirthDay.setVisibility(View.GONE);
-                editTextBirthDay.setText("1");
-                spinnerBirthMonth.setVisibility(View.GONE);
-                spinnerBirthMonth.setSelection(0);
-                birthFormat = "Y";
-                //Log.i("ajc2", String.valueOf(spinnerBirthMonth.getSelectedItem()) + " position: " + String.valueOf(spinnerBirthMonth.getSelectedItemPosition()));
-            }
-        });
-        
         editTextDeathYear = (EditText) mView.findViewById(R.id.death_year);
         editTextDeathDay = (EditText) mView.findViewById(R.id.death_day);
         spinnerDeathMonth = (Spinner) mView.findViewById(R.id.death_month);
-        
-        RadioButton radioButtonDeathYMD = (RadioButton) mView.findViewById(R.id.death_date_format_ymd);
-        radioButtonDeathYMD.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (editTextDeathDay.getVisibility() == View.GONE) editTextDeathDay.setText("");
-                editTextDeathDay.setVisibility(View.VISIBLE);
-                spinnerDeathMonth.setVisibility(View.VISIBLE);
-                deathFormat = "YMD";
-            }
-        });
-
-        RadioButton radioButtonDeathYM = (RadioButton) mView.findViewById(R.id.death_date_format_ym);
-        radioButtonDeathYM.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editTextDeathDay.setVisibility(View.GONE);
-                editTextDeathDay.setText("1");
-                spinnerDeathMonth.setVisibility(View.VISIBLE);
-                deathFormat = "YM";
-            }
-        });
-
-        RadioButton radioButtonDeathY = (RadioButton) mView.findViewById(R.id.death_date_format_y);
-        radioButtonDeathY.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editTextDeathDay.setVisibility(View.GONE);
-                editTextDeathDay.setText("1");
-                spinnerDeathMonth.setVisibility(View.GONE);
-                spinnerDeathMonth.setSelection(0);
-                deathFormat = "Y";
-                //Log.i("ajc2", String.valueOf(spinnerDeathMonth.getSelectedItem()) + " position: " + String.valueOf(spinnerDeathMonth.getSelectedItemPosition()));
-            }
-        });
-        
-        /*
-        InputFilter filterDay = new InputFilter() {
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
-                int input = Integer.parseInt(source.toString());
-                if(input > 0 && input < 32 ) return null;
-                //for (int i = start; i < end; i++) {
-                //    if (!Character.isLetterOrDigit(source.charAt(i))) { // Accept only letter & digits ; otherwise just return
-                //        Toast.makeText(context,"Invalid Input",Toast.LENGTH_SHORT).show();
-                //        return "";
-                //    }
-                //}
-
-                return "0";
-            }
-
-        };
-        editTextBirthDay.setFilters(new InputFilter[]{filterDay});
-        */
 
         builder.setView(mView)
                 // Add action buttons
@@ -199,6 +95,44 @@ public class NamesDialog  extends DialogFragment {
 
         mDialog = builder.create();
 
+        RadioGroup radioGroupBirth = (RadioGroup) mView.findViewById(R.id.radio_group_birth);
+        radioGroupBirth.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.birth_date_format_ymd:
+                        birthFormat = "YMD";
+                        break;
+                    case R.id.birth_date_format_ym:
+                        birthFormat = "YM";
+                        break;
+                    case R.id.birth_date_format_y:
+                        birthFormat = "Y";
+                        break;
+                }
+                dateFormat("birth");
+            }
+        });
+
+        RadioGroup radioGroupDeath = (RadioGroup) mView.findViewById(R.id.radio_group_death);
+        radioGroupDeath.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.death_date_format_ymd:
+                        deathFormat = "YMD";
+                        break;
+                    case R.id.death_date_format_ym:
+                        deathFormat = "YM";
+                        break;
+                    case R.id.death_date_format_y:
+                        deathFormat = "Y";
+                        break;
+                }
+                dateFormat("death");
+            }
+        });
+
         if (mFirebaseItemKey != null) populateData();
         return mDialog;
     }
@@ -210,12 +144,8 @@ public class NamesDialog  extends DialogFragment {
             @Override
             public void onClick(View v) {
                 validateData();
-                //saveData();
-                //mDialog.dismiss();
             }
         });
-
-        Log.i("ajc2", " Ref: " + mDbLocationMasterNamesRef.getRef().toString() + " key: " + mFirebaseItemKey);
     }
 
     public void populateData(){
@@ -224,8 +154,11 @@ public class NamesDialog  extends DialogFragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DbLocationNames dbLocationNames = dataSnapshot.getValue(DbLocationNames.class);
                 if (dbLocationNames != null) {
+
+                    // Names
                     editTextFamilyName.setText(dbLocationNames.getFamilyName());
                     editTextFirstName.setText(dbLocationNames.getFirstName());
+
                     // Birth
                     editTextBirthYear.setText(String.valueOf(dbLocationNames.getBirthYear()));
                     spinnerBirthMonth.setSelection(dbLocationNames.getBirthMonth());
@@ -276,7 +209,11 @@ public class NamesDialog  extends DialogFragment {
 
     }
 
+    // **************
+    // Used to format the date input fields
+    // 
     public void dateFormat (String type) {
+        // Birth       
         if (type.equals("birth")) {
             switch (birthFormat) {
                 case "YMD":
@@ -298,6 +235,7 @@ public class NamesDialog  extends DialogFragment {
             }
         }
 
+        // Death
         if (type.equals("death")) {
             switch (deathFormat) {
                 case "YMD":
@@ -319,7 +257,11 @@ public class NamesDialog  extends DialogFragment {
             }
         }
     }
-    
+
+
+    // **************
+    // Save data into Firebase
+    // 
     public void saveData(int yearBirth, int monthBirth, int dayBirth, int yearDeath, int monthDeath, int dayDeath) {
         DbLocationNames dbLocationNames = new DbLocationNames(
                 editTextFamilyName.getText().toString(),
@@ -331,6 +273,9 @@ public class NamesDialog  extends DialogFragment {
         tempRef.setValue(dbLocationNames);
     }
 
+    // **************
+    // Data validation 
+    //
     public void validateData() {
         Boolean noErrors = true;
 
@@ -343,9 +288,6 @@ public class NamesDialog  extends DialogFragment {
         int yearBirth = Helper.stringToIntDefault0(editTextBirthYear.getText().toString());
         int monthBirth = spinnerBirthMonth.getSelectedItemPosition();
         int dayBirth = Helper.stringToIntDefault0(editTextBirthDay.getText().toString());
-
-        //Log.i("ajc2", "year: " + editTextBirthYear.getText().toString() + " month: " + monthBirth + " day: " + editTextBirthDay.getText().toString());
-        //Log.i("ajc2", "year: " + yearBirth + " month: " + monthBirth + " day: " + dayBirth);
 
         if (yearBirth == 0) {
             editTextBirthYear.setError(getString(R.string.error_field_required));
@@ -367,8 +309,6 @@ public class NamesDialog  extends DialogFragment {
             }
         }
         
-        //Log.i("ajc2", String.valueOf(Helper.validDateYMD(yearBirth, monthBirth, dayBirth)));
-
         if (noErrors && !Helper.validDateYMD(yearBirth, monthBirth, dayBirth)) {
             editTextBirthDay.setError("Invalid date");
             noErrors = false;
@@ -379,9 +319,6 @@ public class NamesDialog  extends DialogFragment {
         int yearDeath = Helper.stringToIntDefault0(editTextDeathYear.getText().toString());
         int monthDeath = spinnerDeathMonth.getSelectedItemPosition();
         int dayDeath = Helper.stringToIntDefault0(editTextDeathDay.getText().toString());
-
-        //Log.i("ajc2", "year: " + editTextDeathYear.getText().toString() + " month: " + monthDeath + " day: " + editTextDeathDay.getText().toString());
-        //Log.i("ajc2", "year: " + yearDeath + " month: " + monthDeath + " day: " + dayDeath);
 
         if (yearDeath == 0) {
             editTextDeathYear.setError(getString(R.string.error_field_required));
@@ -403,8 +340,6 @@ public class NamesDialog  extends DialogFragment {
             }
         }
 
-        //Log.i("ajc2", String.valueOf(Helper.validDateYMD(yearDeath, monthDeath, dayDeath)));
-
         if (noErrors && !Helper.validDateYMD(yearDeath, monthDeath, dayDeath)) {
             editTextDeathDay.setError("Invalid date");
             noErrors = false;
@@ -416,5 +351,4 @@ public class NamesDialog  extends DialogFragment {
             mDialog.dismiss();
         }
     }
-
 }

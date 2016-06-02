@@ -130,6 +130,7 @@
         <item>BlankFragment</item>
     </string-array>
 
+    <!--
     <string-array name="step_tab_icon">
         <item />
         <item>ic_step_camera_24dp</item>
@@ -138,13 +139,14 @@
         <item>ic_step_location_24dp</item>
         <item>ic_step_publish_24dp</item>
     </string-array>
+    -->
 
     <!-- Changes in the step_db_column array also needs to be made in DbLocationEditStatus.java -->
     <string-array name="step_db_column">
         <item />
         <item>picture</item>
         <item>images</item>
-        <item>names</item>
+        <item>name</item>
         <item>location</item>
         <item>publish</item>
     </string-array>
@@ -211,4 +213,17 @@
         <item>December</item>
     </string-array>
 
+    <string name="picture_msg_default">Missing Picture</string>
+    <string name="name_msg_default">Missing Names</string>
+    <string name="image_msg_default"/>
+    <string name="location_msg_default">Location needs verified</string>
+    <string name="publish_msg_default"/>
+
+    <string name="picture_ic_default">ic_step_camera_24dp</string>
+    <string name="name_ic_default">ic_step_edit_24dp</string>
+    <string name="image_ic_default">ic_step_camera_24dp</string>
+    <string name="location_ic_default">ic_step_location_24dp</string>
+    <string name="publish_ic_default">ic_step_publish_24dp</string>
+
+    <string name="google_maps_api2">test</string>
 </resources>
