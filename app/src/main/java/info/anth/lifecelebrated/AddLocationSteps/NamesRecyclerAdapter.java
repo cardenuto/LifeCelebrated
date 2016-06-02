@@ -10,8 +10,6 @@ import android.widget.EditText;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.Query;
-import java.util.ArrayList;
-import java.util.List;
 
 import info.anth.lifecelebrated.Data.DbLocationNames;
 import info.anth.lifecelebrated.Helpers.FirebaseArrayLocal;
@@ -25,15 +23,11 @@ import info.anth.lifecelebrated.R;
  */
 public class NamesRecyclerAdapter extends RecyclerView.Adapter<NamesRecyclerAdapter.ItemHolder> {
 
-    //private List<String> itemsName;
-    //private List<DbLocationNames> itemsName;
-    //private OnItemClickListener onItemClickListener;
     private LayoutInflater layoutInflater;
     FirebaseArrayLocal mSnapshots;
 
     public NamesRecyclerAdapter(Context context, Query ref){
         layoutInflater = LayoutInflater.from(context);
-        //itemsName = new ArrayList<DbLocationNames>();
         mSnapshots = new FirebaseArrayLocal(ref);
 
         mSnapshots.setOnChangedListener(new FirebaseArrayLocal.OnChangedListener() {
@@ -94,19 +88,6 @@ public class NamesRecyclerAdapter extends RecyclerView.Adapter<NamesRecyclerAdap
         public void onItemClick(ItemHolder item, int position);
     }
 */
-/*    public void add(int location, DbLocationNames iName){
-        itemsName.add(location, iName);
-        notifyItemInserted(location);
-    }
-
-    public void remove(int location){
-        if(location >= itemsName.size())
-            return;
-
-        itemsName.remove(location);
-        notifyItemRemoved(location);
-    }
-*/
     /*
     public static class ItemHolderOld extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -151,8 +132,8 @@ public class NamesRecyclerAdapter extends RecyclerView.Adapter<NamesRecyclerAdap
             super(itemView);
             this.parent = parent;
             //mView = itemView;
-            editFamilyName = (EditText) itemView.findViewById(R.id.entered_text_family);
-            editFirstName = (EditText) itemView.findViewById(R.id.entered_text_first);
+            //editFamilyName = (EditText) itemView.findViewById(R.id.entered_text_family);
+            //editFirstName = (EditText) itemView.findViewById(R.id.entered_text_first);
         }
 
         public void setItems(DbLocationNames dbLocationNames){

@@ -1,11 +1,3 @@
-package info.anth.lifecelebrated.Helpers;
-
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.FirebaseError;
-
-import java.util.ArrayList;
-
 /*
  * Firebase UI Bindings Android Library
  *
@@ -33,14 +25,15 @@ import java.util.ArrayList;
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package info.anth.lifecelebrated.Helpers;
 
 
-        import com.firebase.client.ChildEventListener;
-        import com.firebase.client.DataSnapshot;
-        import com.firebase.client.FirebaseError;
-        import com.firebase.client.Query;
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 
-        import java.util.ArrayList;
+import java.util.ArrayList;
 
 /**
  * This class implements an array-like collection on top of a Firebase location.

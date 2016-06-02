@@ -1,6 +1,8 @@
 package info.anth.lifecelebrated.AddLocationSteps;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,10 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseRecyclerAdapter;
+
+import org.w3c.dom.Text;
 
 import info.anth.lifecelebrated.Data.DbLocationEditList;
 import info.anth.lifecelebrated.Data.DbLocationNames;
@@ -67,7 +72,7 @@ public class NamesFragmentRecycler extends Fragment {
         mDbLocationMasterNamesRef = dbLocationMasterRef.child(getResources().getString(R.string.FIREBASE_CHILD_MASTER_NAMES));
 
         recycler = (RecyclerView) rootView.findViewById(R.id.namesList);
-        Log.i("ajc2", "0 Recycler : " + String.valueOf(recycler) + " dbref: " + String.valueOf(mDbLocationMasterNamesRef) );
+        //Log.i("ajc2", "0 Recycler : " + String.valueOf(recycler) + " dbref: " + String.valueOf(mDbLocationMasterNamesRef) );
         //recycler.setHasFixedSize(true);
         /*recycler.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
@@ -75,9 +80,9 @@ public class NamesFragmentRecycler extends Fragment {
                 return false;
             }});*/
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        NamesRecyclerAdapter myRecyclerViewAdapter = new NamesRecyclerAdapter(getContext(), mDbLocationMasterNamesRef);
+        //NamesRecyclerAdapter myRecyclerViewAdapter = new NamesRecyclerAdapter(getContext(), mDbLocationMasterNamesRef);
 
-        recycler.setAdapter(myRecyclerViewAdapter);
+        //recycler.setAdapter(myRecyclerViewAdapter);
 /*
         //insert dummy items
         myRecyclerViewAdapter.add(0, new DbLocationNames("Smith", "Eric"));
@@ -94,44 +99,51 @@ public class NamesFragmentRecycler extends Fragment {
         myRecyclerViewAdapter.add(4, new DbLocationNames("Smith", "Frankie"));
 
         //recycler.setAdapter(new BasicListAdapter(this));
-
+*/
         mChildAdapter = new FirebaseRecyclerAdapter<DbLocationNames, LocationNamesViewHolder>
                 (DbLocationNames.class, R.layout.x_step_names_list, LocationNamesViewHolder.class, mDbLocationMasterNamesRef) {
             @Override
             public void populateViewHolder(LocationNamesViewHolder locationNamesViewHolder
                     , DbLocationNames dbLocationNames, int position) {
 
-                Log.i("ajc2", "in populateViewHolder");
+                //Log.i("ajc2", "in populateViewHolder");
                 // define the text fields
-                locationNamesViewHolder.editFamilyName.setText(dbLocationNames.getFamilyName());
-                locationNamesViewHolder.editFirstName.setText(dbLocationNames.getFirstName());
+                //locationNamesViewHolder.editFamilyName.setText(dbLocationNames.getFamilyName());
+                //locationNamesViewHolder.editFirstName.setText(dbLocationNames.getFirstName());
 
-                Log.i("ajc2", "in populateViewHolder : " + dbLocationNames.getFamilyName() );
+                String tempString = dbLocationNames.getFamilyName() + ", " + dbLocationNames.getFirstName();
+                locationNamesViewHolder.textName.setText(tempString);
+                tempString = "June 12, 1944 - May 3, 2010";
+                locationNamesViewHolder.textDates.setText(tempString);
+
+                //Log.i("ajc2", "in populateViewHolder : " + dbLocationNames.getFamilyName() );
             }
             @Override
             public void onBindViewHolder(final LocationNamesViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-                Log.i("ajc2", "in onBindViewHolder");
+                //Log.i("ajc2", "in onBindViewHolder");
                 holder.mItem = (DbLocationNames) mChildAdapter.getItem(position);
                 holder.mNameKey = mChildAdapter.getRef(position).getKey();
                 holder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i("ajc2", "Click position: " + String.valueOf(holder.getAdapterPosition()) + " key: " + holder.mNameKey);
+                        //Log.i("ajc2", "Click position: " + String.valueOf(holder.getAdapterPosition()) + " key: " + holder.mNameKey);
+                        NamesDialog namesDialog = NamesDialog.newInstance(mDbLocationMasterNamesRef.getRef().toString(), holder.mNameKey);
+                        namesDialog.show(getChildFragmentManager(),"");
                     }
                 });
             }
 
         };
-       */
+
         //Log.i("ajc2","adapter count:  " + String.valueOf(mChildAdapter.getItemCount()));
-        //recycler.setAdapter(mChildAdapter);
+        recycler.setAdapter(mChildAdapter);
 
 
 
         return rootView;
     }
-/*
+
     @Override
     public void onResume() {
         super.onResume();
@@ -143,16 +155,20 @@ public class NamesFragmentRecycler extends Fragment {
 
     public static class LocationNamesViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        EditText editFamilyName;
-        EditText editFirstName;
+        //EditText editFamilyName;
+        //EditText editFirstName;
+        TextView textName;
+        TextView textDates;
         public DbLocationNames mItem;
         public String mNameKey;
 
         public LocationNamesViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            editFamilyName = (EditText)itemView.findViewById(R.id.entered_text_family);
-            editFirstName = (EditText)itemView.findViewById(R.id.entered_text_first);
+            //editFamilyName = (EditText)itemView.findViewById(R.id.entered_text_family);
+            //editFirstName = (EditText)itemView.findViewById(R.id.entered_text_first);
+            textName = (TextView) itemView.findViewById(R.id.textview_person);
+            textDates = (TextView) itemView.findViewById(R.id.textview_dates);
         }
     }
 
@@ -162,5 +178,4 @@ public class NamesFragmentRecycler extends Fragment {
         Log.i("ajc2","in onDestroy ");
         mChildAdapter.cleanup();
     }
-    */
 }

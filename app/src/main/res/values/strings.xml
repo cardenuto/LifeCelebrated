@@ -179,4 +179,36 @@
     <!-- *** end step fragments *** -->
     <!-- *** end step activity *** -->
 
+    <string name="month_prompt">Month</string>
+
+    <string-array name="month_array_no">
+        <item>01 January</item>
+        <item>02 February</item>
+        <item>03 March</item>
+        <item>04 April</item>
+        <item>05 May</item>
+        <item>06 June</item>
+        <item>07 July</item>
+        <item>08 August</item>
+        <item>09 September</item>
+        <item>10 October</item>
+        <item>11 November</item>
+        <item>12 December</item>
+    </string-array>
+
+    <string-array name="month_array">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
 </resources>

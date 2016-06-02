@@ -190,15 +190,17 @@ public class NamesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //DbLocationNames newDbLocationNames = new DbLocationNames("Smitty", "My");
-                DbLocationNames newDbLocationNames = DbLocationNames.columns.createBlank();
-                mDbLocationMasterNamesRef.push().setValue(newDbLocationNames);
+                //DbLocationNames newDbLocationNames = DbLocationNames.columns.createBlank();
+                //mDbLocationMasterNamesRef.push().setValue(newDbLocationNames);
+                NamesDialog namesDialog = NamesDialog.newInstance(mDbLocationMasterNamesRef.getRef().toString(), null);
+                namesDialog.show(getChildFragmentManager(),"");
             }
         });
 
 
         return rootView;
     }
-
+/*
     public static class LocationNamesViewHolder extends RecyclerView.ViewHolder {
         View mView;
         EditText editFamilyName;
@@ -213,7 +215,7 @@ public class NamesFragment extends Fragment {
             editFirstName = (EditText)itemView.findViewById(R.id.entered_text_first);
         }
     }
-
+*/
     public void refreshScreen(final DbLocationMaster thisLocationMaster) {
         /*EditText editText = (EditText) rootView.findViewById(R.id.entered_text);
         TextView textView = (TextView) rootView.findViewById(R.id.show_text);
