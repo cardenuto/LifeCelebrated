@@ -50,6 +50,7 @@
             android:layout_gravity="center_vertical"
             />
         <RadioGroup
+            android:id="@+id/radio_group_birth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
@@ -126,6 +127,7 @@
             android:textSize="20sp"
             />
         <RadioGroup
+            android:id="@+id/radio_group_death"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"

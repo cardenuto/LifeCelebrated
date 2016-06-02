@@ -111,10 +111,14 @@ public class NamesFragmentRecycler extends Fragment {
                 //locationNamesViewHolder.editFamilyName.setText(dbLocationNames.getFamilyName());
                 //locationNamesViewHolder.editFirstName.setText(dbLocationNames.getFirstName());
 
-                String tempString = dbLocationNames.getFamilyName() + ", " + dbLocationNames.getFirstName();
-                locationNamesViewHolder.textName.setText(tempString);
-                tempString = "June 12, 1944 - May 3, 2010";
-                locationNamesViewHolder.textDates.setText(tempString);
+                //String tempString = dbLocationNames.getFamilyName() + ", " + dbLocationNames.getFirstName();
+                //locationNamesViewHolder.textName.setText(tempString);
+                //tempString = "June 12, 1944 - May 3, 2010";
+                //locationNamesViewHolder.textDates.setText(tempString);
+
+
+                locationNamesViewHolder.textName.setText(DbLocationNames.columns.nameToString(dbLocationNames));
+                locationNamesViewHolder.textDates.setText(DbLocationNames.columns.dateRangeToString(dbLocationNames, getActivity()));
 
                 //Log.i("ajc2", "in populateViewHolder : " + dbLocationNames.getFamilyName() );
             }
