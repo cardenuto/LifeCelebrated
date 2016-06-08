@@ -10,10 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseRecyclerAdapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import info.anth.lifecelebrated.Data.DbLocationEditList;
 import info.anth.lifecelebrated.Data.DbLocationNames;
+import info.anth.lifecelebrated.Data.DbLocationStatusIC;
 import info.anth.lifecelebrated.R;
 
 /**
@@ -22,9 +30,15 @@ import info.anth.lifecelebrated.R;
 public class NamesFragmentRecycler extends Fragment {
 
     private static final String ARG_FIREBASE_EDIT_MASTER_REF = "firebase_edit_master_ref";
+    private static final String ARG_FIREBASE_EDIT_LIST_REF = "firebase_edit_list_ref";
+    private static final String ARG_FIREBASE_EDIT_STATUS_IC_REF = "firebase_edit_status_ic_ref";
 
     //private static int currentPage;
     private static Firebase mDbLocationMasterNamesRef;
+    private static Firebase mDbLocationEditListRef;
+    private static Firebase mDbLocationStatusICRef;
+
+    private ValueEventListener valueEventListener;
 
     FirebaseRecyclerAdapter mChildAdapter;
     RecyclerView recycler;
@@ -35,10 +49,12 @@ public class NamesFragmentRecycler extends Fragment {
      * Returns a new instance of this fragment for the given page
      * number.
      */
-    public static NamesFragmentRecycler newInstance(String firebaseEditMaster) {
+    public static NamesFragmentRecycler newInstance(String firebaseEditMaster, String firebaseEditList, String firebaseEditStatusIC) {
         NamesFragmentRecycler fragment = new NamesFragmentRecycler();
         Bundle args = new Bundle();
         args.putString(ARG_FIREBASE_EDIT_MASTER_REF, firebaseEditMaster);
+        args.putString(ARG_FIREBASE_EDIT_LIST_REF, firebaseEditList);
+        args.putString(ARG_FIREBASE_EDIT_STATUS_IC_REF, firebaseEditStatusIC);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,8 +73,13 @@ public class NamesFragmentRecycler extends Fragment {
         if (dbLocationMasterRef == null) {
             return rootView;
         }
-
         mDbLocationMasterNamesRef = dbLocationMasterRef.child(getResources().getString(R.string.FIREBASE_CHILD_MASTER_NAMES));
+
+        tempString = getArguments().getString(ARG_FIREBASE_EDIT_LIST_REF);
+        if (tempString != null) mDbLocationEditListRef = new Firebase(tempString);
+        tempString = getArguments().getString(ARG_FIREBASE_EDIT_STATUS_IC_REF);
+        if (tempString != null) mDbLocationStatusICRef = new Firebase(tempString);
+
 
         recycler = (RecyclerView) rootView.findViewById(R.id.namesList);
         //Log.i("ajc2", "0 Recycler : " + String.valueOf(recycler) + " dbref: " + String.valueOf(mDbLocationMasterNamesRef) );
@@ -143,7 +164,18 @@ public class NamesFragmentRecycler extends Fragment {
 
        // recycler.setAdapter(mChildAdapter);
         //recycler.refreshDrawableState();
-        Log.i("ajc2","in onResume mChildAdapter: " + String.valueOf(mChildAdapter.hasObservers()) + " : " + String.valueOf(mChildAdapter.getItemCount()) + " recycler: " + recycler.getChildCount());
+        //Log.i("ajc2","in onResume mChildAdapter: " + String.valueOf(mChildAdapter.hasObservers()) + " : " + String.valueOf(mChildAdapter.getItemCount()) + " recycler: " + recycler.getChildCount());
+        addDBListenerUpdateEditList();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (mDbLocationMasterNamesRef != null && valueEventListener != null) {
+            //Log.i(LOG_TAG, "before remove");
+            mDbLocationMasterNamesRef.removeEventListener(valueEventListener);
+        }
     }
 
     public static class LocationNamesViewHolder extends RecyclerView.ViewHolder {
@@ -170,5 +202,43 @@ public class NamesFragmentRecycler extends Fragment {
         super.onDestroy();
         Log.i("ajc2","in onDestroy ");
         mChildAdapter.cleanup();
+    }
+
+    public void addDBListenerUpdateEditList() {
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() > 0) {
+                    // Update Status Icon
+                    Map<String, Object> icon = new HashMap<>();
+                    icon.put(DbLocationStatusIC.columns.COLUMN_NAME, "ic_step_check_24dp");
+                    mDbLocationStatusICRef.updateChildren(icon);
+
+                    // Update EditList Msg field
+                    Map<String, Object> msg = new HashMap<>();
+                    msg.put(DbLocationEditList.columns.COLUMN_NAME_MSG, "");
+                    mDbLocationEditListRef.updateChildren(msg);
+                } else {
+                    // Update Status Icon
+                    Map<String, Object> icon = new HashMap<>();
+                    icon.put(DbLocationStatusIC.columns.COLUMN_NAME, getResources().getString(R.string.name_ic_default));
+                    mDbLocationStatusICRef.updateChildren(icon);
+
+                    // Update EditList Msg field in case it was deleted
+                    Map<String, Object> msg = new HashMap<>();
+                    msg.put(DbLocationEditList.columns.COLUMN_NAME_MSG, getResources().getString(R.string.name_msg_default));
+                    mDbLocationEditListRef.updateChildren(msg);
+                }
+                Log.i("ajc2", "Children: " + String.valueOf(dataSnapshot.getChildrenCount()));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+
+        mDbLocationMasterNamesRef.addValueEventListener(valueEventListener);
     }
 }

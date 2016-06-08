@@ -1,10 +1,20 @@
 package info.anth.lifecelebrated;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -22,12 +32,28 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import info.anth.lifecelebrated.AddLocationSteps.BlankFragment;
@@ -43,7 +69,8 @@ import info.anth.lifecelebrated.Data.DbLocationStatusIC;
 import info.anth.lifecelebrated.Services.ObtainGPSDataService;
 import info.anth.lifecelebrated.login.LocalUserInfo;
 
-public class StepsActivity extends AppCompatActivity {
+public class StepsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     public static final String REQUEST_CURRENT_STEP = "current_step";
     public static final String REQUEST_CURRENT_LOCATION = "current_location";
@@ -51,17 +78,19 @@ public class StepsActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = StepsActivity.class.getSimpleName();
 
-
     int currentStep;
     int priorStep;
     Stack<Integer> pageHistory;
     boolean saveToHistory;
+    private static Context context;
 
     private static Firebase mDbLocationMasterRef;
     private static Firebase mDbLocationMapRef;
     private static Firebase mDbLocationEditListRef;
     private static Firebase mDbLocationStatusICRef;
     private ValueEventListener valueEventListenerStatus;
+
+    //private static Boolean locationNeeded = false;
 
     private String currentEditListItem;
 
@@ -97,6 +126,8 @@ public class StepsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        context = this;
+
         /*
         // Progress Bar
         progressBar = (ProgressBar) findViewById(R.id.overall_progress);
@@ -123,6 +154,13 @@ public class StepsActivity extends AppCompatActivity {
         String currentLocation = getIntent().getStringExtra(REQUEST_CURRENT_LOCATION);
         currentEditListItem = getIntent().getStringExtra(REQUEST_CURRENT_EDIT_LIST_ITEM);
 
+        Log.i("ajc2","mDbLocationMasterRef: " + String.valueOf(mDbLocationMasterRef) +
+                " mDbLocationMapRef: " + String.valueOf(mDbLocationMapRef) +
+                " mDbLocationStatusICRef: " + String.valueOf(mDbLocationStatusICRef) +
+                " mDbLocationEditListRef: " + String.valueOf(mDbLocationEditListRef) +
+                " savedInstanceState: " + String.valueOf(savedInstanceState));
+
+        // data was not saved so no need for savedInstanceState logic
         if (savedInstanceState == null) {
 
             // ------------------------------------
@@ -170,10 +208,37 @@ public class StepsActivity extends AppCompatActivity {
             // ------------------------------------
             // Call Location Service
             //
+            if (currentLocation == null) findLocation();
+            // HERE
+            //if (currentLocation == null) locationNeeded = true;
+            //
+            // ------------------------------------
+        // end save instance state logic - commented out
+        }
+        //checkPermissionExternal();
+        finishCreate();
+    }
+
+    protected void finishCreate() {
+        /*
+        if (savedInstanceState == null) {
+            // ------------------------------------
+            // Call Location Service
+            //
             if (currentLocation == null) findLocation(this);
             //
             // ------------------------------------
         }
+        */
+
+        // new
+        /*
+        if (locationNeeded) {
+            locationNeeded = false;
+            findLocation(this);
+        }
+        */
+        // end new
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -230,12 +295,13 @@ public class StepsActivity extends AppCompatActivity {
                     //if (mViewPager.getCurrentItem() == 0)
                     {
                         // Hide the keyboard.
-                        ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE))
+                        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
                     }
                 }
             }
         });
+
     }
 
     // ------------------------------------
@@ -291,8 +357,18 @@ public class StepsActivity extends AppCompatActivity {
     // Location functions
     // ------------------------------------
 
+    // wrapper to check permission
+    protected void findLocation() {
+        checkPermissionLocation();
+    }
+
+    // wrapper to check settings
+    protected void findLocationAllowed() {
+        checkLocationSettings();
+    }
+
     // Call Location Service
-    protected static void findLocation(Context context) {
+    protected static void findLocationAllowedSettings() {
         Intent myIntent = new Intent(context, ObtainGPSDataService.class);
         myIntent.putExtra(ObtainGPSDataService.REQUEST_REF_LOCATION_MAP, mDbLocationMapRef.getRef().toString());
         context.startService(myIntent);
@@ -424,11 +500,319 @@ public class StepsActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(mGoogleApiClient != null) mGoogleApiClient.connect();
+
+        Log.i("ajc2","onResume mDbLocationMasterRef: " + String.valueOf(mDbLocationMasterRef) +
+                " mDbLocationMapRef: " + String.valueOf(mDbLocationMapRef) +
+                " mDbLocationStatusICRef: " + String.valueOf(mDbLocationStatusICRef) +
+                " mDbLocationEditListRef: " + String.valueOf(mDbLocationEditListRef));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mGoogleApiClient != null) mGoogleApiClient.disconnect();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        mDbLocationStatusICRef.removeEventListener(valueEventListenerStatus);
+        if(mDbLocationStatusICRef != null && valueEventListenerStatus != null) mDbLocationStatusICRef.removeEventListener(valueEventListenerStatus);
     }
 
     // End other
     // ------------------------------------
+
+    // ------------------------------------
+    // Check location setting
+    // ------------------------------------
+
+    protected static GoogleApiClient mGoogleApiClient;
+    protected LocationRequest mLocationRequest;
+    public static final int REQUEST_CHECK_SETTINGS = 1210;
+
+    protected void checkLocationSettings() {
+        Log.i("ajc2","checkLocationSettings before");
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                //.addConnectionCallbacks(this)
+                //.addOnConnectionFailedListener(this)
+                .build();
+
+        mLocationRequest = new LocationRequest();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        mLocationRequest.setInterval(ObtainGPSDataService.UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(ObtainGPSDataService.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        // //// start check settings section
+
+        // Setup to ask for current location settings
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        // Check to see if settings are met
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                        builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+                final Status status = locationSettingsResult.getStatus();
+                final LocationSettingsStates LS_state = locationSettingsResult.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        Log.i("ajc2","checkLocationSettings SUCCESS");
+                        findLocationAllowedSettings();
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        Log.i("ajc2","checkLocationSettings RESOLUTION_REQUIRED");
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    StepsActivity.this,
+                                    REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+                        Log.i("ajc2","checkLocationSettings SETTINGS_CHANGE_UNAVAILABLE");
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("ajc2","onActivityResult before");
+        final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        findLocationAllowedSettings();//FINALLY YOUR OWN METHOD TO GET YOUR USER LOCATION HERE
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.i("ajc2","in onConnected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("ajc2","in onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i("ajc2","in onConnectionFailed");
+    }
+    // End check location setting
+    // ------------------------------------
+
+
+    // ------------------------------------
+    // Permissions
+    // ------------------------------------
+
+    //public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1492;
+    //public static final int PERMISSIONS_REQUEST_MULTIPLE_PERMISSIONS = 1592;
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1692;
+
+    // in an activity you can call ActivityCompat in fragment needs to be requestPermissions in order to call callback
+    /*
+    public void checkPermissionExternal() {
+        List<String> permissionsNeeded = new ArrayList<String>();
+        final Activity activity = this;
+
+        final List<String> permissionsList = new ArrayList<String>();
+        if (!addPermission(permissionsList, Manifest.permission.ACCESS_FINE_LOCATION))
+            permissionsNeeded.add("GPS");
+        if (!addPermission(permissionsList, Manifest.permission.READ_EXTERNAL_STORAGE))
+            permissionsNeeded.add("Read Contacts");
+        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            permissionsNeeded.add("Write Contacts");
+
+        if (permissionsList.size() > 0) {
+            if (permissionsNeeded.size() > 0) {
+                // Need Rationale
+                String message = "You need to grant access to " + permissionsNeeded.get(0);
+                for (int i = 1; i < permissionsNeeded.size(); i++) message = message + ", " + permissionsNeeded.get(i);
+                showMessageOKCancel(message,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]),
+                                        PERMISSIONS_REQUEST_MULTIPLE_PERMISSIONS);
+                            }
+                        });
+                return;
+            }
+            ActivityCompat.requestPermissions(this, permissionsList.toArray(new String[permissionsList.size()]),
+                    PERMISSIONS_REQUEST_MULTIPLE_PERMISSIONS);
+            return;
+        }
+
+        processCallCode();
+
+    }
+    */
+
+    // in an activity you can call ActivityCompat in fragment needs to be requestPermissions in order to call callback
+    // ActivityCompat.requestPermissions(this, ...
+    // requestPermissions( ...
+    public void checkPermissionLocation() {
+        final Activity activity = this;
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                showMessageContinueCancel("Knowing your locations gives us the ability to mark the grave with a GPS location. We will need permission to access location on your device.",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                            }
+                        });
+                return;
+            }
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            return;
+        }
+        findLocationAllowed();
+    }
+
+
+    /*
+    private boolean addPermission(List<String> permissionsList, String permission) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission))
+                return false;
+        }
+        return true;
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+    */
+
+    private void showMessageContinueCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("Continue", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Log.i("ajc2","PermissionResults before");
+        switch (requestCode) {
+            /*
+            case PERMISSIONS_REQUEST_MULTIPLE_PERMISSIONS:
+            {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+                // Check for ACCESS_FINE_LOCATION
+                if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    // All Permissions Granted
+                    processCallCode();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(this, "Some Permission is Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+            break;
+            */
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    Log.i("ajc2","Location PermissionResults Granted");
+                    findLocationAllowed();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(this, "Location access denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        /*
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    Log.i("ajc2","PermissionResults Granted");
+                    processCallCode();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(this, "WRITE_EXTERNAL_STORAGE Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        */
+    }
+
+    /*
+    private void processCallCode() {
+        Log.i("ajc2","processCallCode");
+        //finishCreate();
+    }
+    */
+
+    // Permissions end
+    // ------------------------------------
+
 }

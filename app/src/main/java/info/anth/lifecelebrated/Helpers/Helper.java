@@ -1,6 +1,11 @@
 package info.anth.lifecelebrated.Helpers;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.util.Calendar;
@@ -13,6 +18,9 @@ import java.util.GregorianCalendar;
  * Set of generic helper utilities
  */
 public class Helper {
+
+    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1492;
+
     public static String resourceString(Context context, int identifier, int currentPage){
         String message;
 
@@ -55,6 +63,16 @@ public class Helper {
             return true;
         } catch (IllegalArgumentException iae) {
             return false;
+        }
+    }
+
+    public static void checkPermissionExternal(Activity activity) {
+        if (ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
     }
 }

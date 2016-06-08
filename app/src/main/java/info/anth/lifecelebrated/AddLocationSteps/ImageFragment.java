@@ -1,16 +1,20 @@
 package info.anth.lifecelebrated.AddLocationSteps;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +33,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.client.annotations.NotNull;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -42,10 +47,12 @@ import java.util.Map;
 
 import info.anth.lifecelebrated.Data.DbLocationEditList;
 import info.anth.lifecelebrated.Data.DbLocationMaster;
+import info.anth.lifecelebrated.Data.DbLocationStatusIC;
 import info.anth.lifecelebrated.Helpers.Helper;
 import info.anth.lifecelebrated.Helpers.Installation;
 import info.anth.lifecelebrated.Helpers.LocalImageInfo;
 import info.anth.lifecelebrated.LifeCelebratedApplication;
+import info.anth.lifecelebrated.MainActivity;
 import info.anth.lifecelebrated.R;
 
 /**
@@ -60,7 +67,7 @@ public class ImageFragment extends Fragment {
      * fragment.
      */
     private static final String ARG_PAGE_NUMBER = "page_number";
-    private static final String ARG_FIREBASE_EDIT_STATUS_REF = "firebase_edit_status_ref";
+    private static final String ARG_FIREBASE_EDIT_STATUS_IC_REF = "firebase_edit_status_ic_ref";
     private static final String ARG_FIREBASE_EDIT_MASTER_REF = "firebase_edit_master_ref";
     private static final String ARG_FIREBASE_EDIT_LIST_REF = "firebase_edit_list_ref";
 
@@ -72,10 +79,12 @@ public class ImageFragment extends Fragment {
 
     private static Firebase mDbLocationEditListRef;
     private static Firebase mDbLocationMasterRef;
-    private static Firebase mDbLocationStatusRef;
+    private static Firebase mDbLocationStatusICRef;
     private ValueEventListener valueEventListener;
     private static String filePath;
     private static String imageName;
+
+    private static String permissionsCallCode;
 
     public ImageFragment() {
     }
@@ -84,11 +93,11 @@ public class ImageFragment extends Fragment {
      * Returns a new instance of this fragment for the given page
      * number.
      */
-    public static ImageFragment newInstance(int pageNumber, String firebaseEditStatus, String firebaseEditMaster, String firebaseEditList) {
+    public static ImageFragment newInstance(int pageNumber, String firebaseEditStatusIC, String firebaseEditMaster, String firebaseEditList) {
         ImageFragment fragment = new ImageFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE_NUMBER, pageNumber);
-        args.putString(ARG_FIREBASE_EDIT_STATUS_REF, firebaseEditStatus);
+        args.putString(ARG_FIREBASE_EDIT_STATUS_IC_REF, firebaseEditStatusIC);
         args.putString(ARG_FIREBASE_EDIT_MASTER_REF, firebaseEditMaster);
         args.putString(ARG_FIREBASE_EDIT_LIST_REF, firebaseEditList);
         fragment.setArguments(args);
@@ -101,8 +110,8 @@ public class ImageFragment extends Fragment {
 
         // get argument data
         int position = getArguments().getInt(ARG_PAGE_NUMBER);
-        String tempString = getArguments().getString(ARG_FIREBASE_EDIT_STATUS_REF);
-        if (tempString != null) mDbLocationStatusRef = new Firebase(tempString);
+        String tempString = getArguments().getString(ARG_FIREBASE_EDIT_STATUS_IC_REF);
+        if (tempString != null) mDbLocationStatusICRef = new Firebase(tempString);
         tempString = getArguments().getString(ARG_FIREBASE_EDIT_MASTER_REF);
         if (tempString != null) mDbLocationMasterRef = new Firebase(tempString);
         tempString = getArguments().getString(ARG_FIREBASE_EDIT_LIST_REF);
@@ -182,12 +191,24 @@ public class ImageFragment extends Fragment {
     }
 
     public void getImageCamera() {
+        // Check permissions
+        permissionsCallCode = "camera";
+        checkPermissionExternal();
+    }
+
+    public void getImageCameraAllowed() {
         // camera
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
 
     public void getImageFile() {
+        // Check permissions
+        permissionsCallCode = "load";
+        checkPermissionExternal();
+    }
+
+    public void getImageFileAllowed() {
         // internet
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -210,11 +231,15 @@ public class ImageFragment extends Fragment {
 
             LocalImageInfo bitmapInfo = new LocalImageInfo(context, selectedImage);
 
+            // get this device code
+            String device = Installation.id(context);
+
             // Update the database
             if (mDbLocationMasterRef != null) {
                 Map<String, Object> textFields = new HashMap<>();
                 textFields.put(DbLocationMaster.columns.COLUMN_PRIMARY_IMAGE, selectedImage.toString());
                 textFields.put(DbLocationMaster.columns.COLUMN_LOCAL_IMAGE_PATH, bitmapInfo.path);
+                textFields.put(DbLocationMaster.columns.COLUMN_DEVICE_ID, device);
                 mDbLocationMasterRef.updateChildren(textFields);
             }
             // Update Edit List
@@ -222,7 +247,15 @@ public class ImageFragment extends Fragment {
                 Map<String, Object> textFields = new HashMap<>();
                 textFields.put(DbLocationEditList.columns.COLUMN_PRIMARY_IMAGE, selectedImage.toString());
                 textFields.put(DbLocationEditList.columns.COLUMN_LOCAL_IMAGE_PATH, bitmapInfo.path);
+                textFields.put(DbLocationEditList.columns.COLUMN_DEVICE_ID, device);
+                textFields.put(DbLocationEditList.columns.COLUMN_PICTURE_MSG, "Upload Main Picture");
                 mDbLocationEditListRef.updateChildren(textFields);
+            }
+
+            if (mDbLocationStatusICRef != null) {
+                Map<String, Object> textFields = new HashMap<>();
+                textFields.put(DbLocationStatusIC.columns.COLUMN_PICTURE, "ic_step_cloud_upload_24dp");
+                mDbLocationStatusICRef.updateChildren(textFields);
             }
         }
     }
@@ -387,7 +420,13 @@ public class ImageFragment extends Fragment {
                         Map<String, Object> imageDataEditList = new HashMap<>();
                         imageDataEditList.put(DbLocationEditList.columns.COLUMN_IMAGE_UPLOADED, true);
                         imageDataEditList.put(DbLocationEditList.columns.COLUMN_PRIMARY_IMAGE, imageName);
+                        imageDataEditList.put(DbLocationEditList.columns.COLUMN_PICTURE_MSG, "");
                         mDbLocationEditListRef.updateChildren(imageDataEditList);
+
+                        // Update Status Icon
+                        Map<String, Object> icon = new HashMap<>();
+                        icon.put(DbLocationStatusIC.columns.COLUMN_PICTURE, "ic_step_check_24dp");
+                        mDbLocationStatusICRef.updateChildren(icon);
                     } else {
                         Log.e("ajc", "Name in Error: it is null.");
                     }
@@ -511,5 +550,62 @@ public class ImageFragment extends Fragment {
             setDBListener();
 
     }
+
+    // ------------------------------------
+    // Permissions
+    // ------------------------------------
+
+    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1492;
+
+    // in an activity you can call ActivityCompat in fragment needs to be requestPermissions in order to call callback
+    public void checkPermissionExternal() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            //ActivityCompat.requestPermissions(this,
+                requestPermissions(
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            return;
+        }
+        processCallCode();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
+        Log.i("ajc2","PermissionResults before");
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    Log.i("ajc2","PermissionResults Granted");
+                    processCallCode();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(getActivity(), "WRITE_EXTERNAL_STORAGE Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void processCallCode() {
+        Log.i("ajc2","processCallCode");
+        switch (permissionsCallCode) {
+            case "camera":
+                getImageCameraAllowed();
+                break;
+            case "load":
+                getImageFileAllowed();
+                break;
+        }
+
+    }
+
+    // Permissions end
+    // ------------------------------------
+
 
 }

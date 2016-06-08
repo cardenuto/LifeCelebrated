@@ -33,8 +33,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -42,10 +41,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:maxLines="3"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textSize="25sp" />
+            android:textSize="18sp"
+            android:minHeight="100dp"
+            />
         <!-- <TextView
             android:id="@+id/edit_list_text"
             android:layout_width="match_parent"

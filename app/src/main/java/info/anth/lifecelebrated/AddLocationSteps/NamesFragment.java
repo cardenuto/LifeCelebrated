@@ -47,7 +47,7 @@ public class NamesFragment extends Fragment {
      * fragment.
      */
     private static final String ARG_PAGE_NUMBER = "page_number";
-    private static final String ARG_FIREBASE_EDIT_STATUS_REF = "firebase_edit_status_ref";
+    private static final String ARG_FIREBASE_EDIT_STATUS_IC_REF = "firebase_edit_status_ic_ref";
     private static final String ARG_FIREBASE_EDIT_MASTER_REF = "firebase_edit_master_ref";
     private static final String ARG_FIREBASE_EDIT_LIST_REF = "firebase_edit_list_ref";
 
@@ -56,7 +56,7 @@ public class NamesFragment extends Fragment {
     //private static int currentPage;
     private static Firebase mDbLocationEditListRef;
     private static Firebase mDbLocationMasterRef;
-    private static Firebase mDbLocationStatusRef;
+    private static Firebase mDbLocationStatusICRef;
     private static Firebase mDbLocationMasterNamesRef;
     private ValueEventListener valueEventListener;
     private String stepTitle;
@@ -72,11 +72,11 @@ public class NamesFragment extends Fragment {
      * Returns a new instance of this fragment for the given page
      * number.
      */
-    public static NamesFragment newInstance(int pageNumber, String firebaseEditStatus, String firebaseEditMaster, String firebaseEditList) {
+    public static NamesFragment newInstance(int pageNumber, String firebaseEditStatusIC, String firebaseEditMaster, String firebaseEditList) {
         NamesFragment fragment = new NamesFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE_NUMBER, pageNumber);
-        args.putString(ARG_FIREBASE_EDIT_STATUS_REF, firebaseEditStatus);
+        args.putString(ARG_FIREBASE_EDIT_STATUS_IC_REF, firebaseEditStatusIC);
         args.putString(ARG_FIREBASE_EDIT_MASTER_REF, firebaseEditMaster);
         args.putString(ARG_FIREBASE_EDIT_LIST_REF, firebaseEditList);
         fragment.setArguments(args);
@@ -89,8 +89,8 @@ public class NamesFragment extends Fragment {
 
         // get argument data
         int position = getArguments().getInt(ARG_PAGE_NUMBER);
-        String tempString = getArguments().getString(ARG_FIREBASE_EDIT_STATUS_REF);
-        if (tempString != null) mDbLocationStatusRef = new Firebase(tempString);
+        String tempString = getArguments().getString(ARG_FIREBASE_EDIT_STATUS_IC_REF);
+        if (tempString != null) mDbLocationStatusICRef = new Firebase(tempString);
         tempString = getArguments().getString(ARG_FIREBASE_EDIT_MASTER_REF);
         if (tempString != null) mDbLocationMasterRef = new Firebase(tempString);
         tempString = getArguments().getString(ARG_FIREBASE_EDIT_LIST_REF);
@@ -144,7 +144,8 @@ public class NamesFragment extends Fragment {
         //
         // -------
 
-        Fragment namesFragmentRecycler = NamesFragmentRecycler.newInstance(mDbLocationMasterRef.getRef().toString());
+        Fragment namesFragmentRecycler = NamesFragmentRecycler.newInstance(mDbLocationMasterRef.getRef().toString(),
+                mDbLocationEditListRef.getRef().toString(), mDbLocationStatusICRef.getRef().toString());
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_recycler, namesFragmentRecycler).commit();
         //transaction.add(R.id.fragment_recycler, namesFragmentRecycler).commit();

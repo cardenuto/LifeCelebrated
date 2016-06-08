@@ -106,5 +106,18 @@ public class DbLocationEditList {
                     context.getResources().getString(R.string.location_msg_default),
                     context.getResources().getString(R.string.publish_msg_default));
         }
+
+        public static String displayFullMsg (DbLocationEditList dbLocationEditList) {
+            String tempString = "";
+            String nl = System.getProperty("line.separator");
+
+            if (!dbLocationEditList.getPictureMsg().isEmpty()) tempString += ((!tempString.isEmpty()) ? nl : "") + dbLocationEditList.getPictureMsg();
+            if (!dbLocationEditList.getNameMsg().isEmpty()) tempString += ((!tempString.isEmpty()) ? nl : "") + dbLocationEditList.getNameMsg();
+            if (!dbLocationEditList.getImagesMsg().isEmpty()) tempString += ((!tempString.isEmpty()) ? nl : "") + dbLocationEditList.getImagesMsg();
+            if (!dbLocationEditList.getLocationMsg().isEmpty()) tempString += ((!tempString.isEmpty()) ? nl : "") + dbLocationEditList.getLocationMsg();
+            if (!dbLocationEditList.getPublishMsg().isEmpty()) tempString += ((!tempString.isEmpty()) ? nl : "") + dbLocationEditList.getPublishMsg();
+
+            return tempString;
+        }
     }
 }

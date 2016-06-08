@@ -96,7 +96,7 @@ public class EditActivityFragment extends Fragment {
                     , DbLocationEditList dbLocationEditList, int position) {
 
                 // define the text fields
-                locationEditListMessageViewHolder.editListTitle.setText(dbLocationEditList.getName());
+                locationEditListMessageViewHolder.editListTitle.setText(DbLocationEditList.columns.displayFullMsg(dbLocationEditList));
                 //locationEditListMessageViewHolder.editListText.setText(dbLocationEditList.getDescription());
 
                 loadImage(dbLocationEditList, locationEditListMessageViewHolder.editListImage, locationEditListMessageViewHolder.editListImageText);
